@@ -8,12 +8,15 @@ def portfolio_cost(filename):
     total = 0
     with open(filename, "rt") as f:
         rows = csv.reader(f)
-        next(rows)
-        for row in rows:
+        headers = next(rows)
+        for i, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
             try:
-                total += int(row[1]) * float(row[2])
+                nshares = int(record["shares"])
+                price = float(record["price"])
+                total += nshares * price
             except ValueError:
-                print(f"Error in reading line {row}")
+                print(f"Row {i}: Couldn't convert: {row}")
     return total
 
 if len(sys.argv) == 2:

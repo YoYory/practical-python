@@ -7,10 +7,13 @@ def read_portfolio(filename: str) -> list:
     portfolio = []
     with open(filename, "rt") as f:
         rows = csv.reader(f)
-        next(rows)
-        for row in rows:
+        headers = next(rows)
+        for i, row in enumerate(rows):
+            record = dict(zip(headers, row))
             try:
-                portfolio.append({"name": row[0], "shares": int(row[1]), "price": float(row[2])})
+                record["shares"] = int(record["shares"])
+                record["price"] = float(record["price"])
+                portfolio.append(record)
             except ValueError:
                 print(f"Error in reading line {row}")
     return portfolio
@@ -22,7 +25,7 @@ def read_prices(filename: str) -> dict:
         for row in rows:
             try:
                 prices[row[0]] = float(row[1])
-            except:
+            except Exception:
                 print("Error reading line")
     return prices
 
@@ -35,7 +38,7 @@ def make_report(portfolio: list, prices: dict) -> list[tuple]:
     return rows
 
 
-portfolio = read_portfolio('Data/portfolio.csv')
+portfolio = read_portfolio('Data/portfoliodate.csv')
 prices = read_prices('Data/prices.csv')
 new_value = 0
 old_value = 0
