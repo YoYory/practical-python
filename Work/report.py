@@ -26,7 +26,7 @@ def read_prices(filename: str) -> dict:
             try:
                 prices[row[0]] = float(row[1])
             except Exception:
-                print("Error reading line")
+                print(f"Error reading line: {row}")
     return prices
 
 def make_report(portfolio: list, prices: dict) -> list[tuple]:
@@ -38,7 +38,7 @@ def make_report(portfolio: list, prices: dict) -> list[tuple]:
     return rows
 
 
-portfolio = read_portfolio('Data/portfoliodate.csv')
+portfolio = read_portfolio('Data/portfolio.csv')
 prices = read_prices('Data/prices.csv')
 new_value = 0
 old_value = 0
