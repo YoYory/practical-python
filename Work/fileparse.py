@@ -3,7 +3,7 @@
 # Exercise 3.3
 import csv
 
-def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","):
+def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=",", silence_errors=False):
     '''
     Parse a csv file into a list of records
     
@@ -23,13 +23,19 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
             else:
                 indices = []
         records = []
-        for row in rows:
+        for i, row in enumerate(rows):
             if not row:
                 continue
             if select:
                 row = [row[i] for i in indices]
             if types:
-                row = [func(x) for func, x in zip(types, row)]
+                try:
+                    row = [func(x) for func, x in zip(types, row)]
+                except ValueError as e:
+                    if not silence_errors:
+                        print(f"Row {i}: Couldn't convert {row}")
+                        print(f"Row {i}: Reason {e}")
+                    continue
             if has_headers:
                 record = dict(zip(headers, row))
             else:
