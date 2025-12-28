@@ -10,9 +10,8 @@ def read_portfolio(filename: str) -> list:
     Read a stock portfolio file into a list of dictionaries with keys
     name, shares, and price.
     """
-    return parse_csv(
-        filename, select=["name", "shares", "price"], types=[str, int, float]
-    )
+    with open(filename) as f:
+        return parse_csv(f, select=["name", "shares", "price"], types=[str, int, float])
 
 
 def read_prices(filename: str) -> dict:
@@ -20,7 +19,8 @@ def read_prices(filename: str) -> dict:
     Read a prices file into a dict with the names as the keys and the the
     prices as the values
     """
-    return dict(parse_csv(filename, has_headers=False, types=[str, float]))
+    with open(filename) as f:
+        return dict(parse_csv(f, has_headers=False, types=[str, float]))
 
 
 def make_report(portfolio: list, prices: dict) -> list[tuple]:
@@ -65,6 +65,7 @@ def main(argv):
         portfolio_report(argv[1], argv[2])
     else:
         portfolio_report("Data/portfolio.csv", "Data/prices.csv")
+
 
 if __name__ == "__main__":
     main(sys.argv)
