@@ -3,12 +3,20 @@
 # Exercise 3.3
 import csv
 
-def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=",", silence_errors=False):
-    '''
+
+def parse_csv(
+    filename: str,
+    select: list = None,
+    types: list = None,
+    has_headers: bool = True,
+    delimiter: str = ",",
+    silence_errors: bool = False,
+) -> list[dict] | list[tuple]:
+    """
     Parse a csv file into a list of records
-    
+
     :param filename: path to the filename
-    '''
+    """
     if select and not has_headers:
         raise RuntimeError("select argument requires column headers")
 
