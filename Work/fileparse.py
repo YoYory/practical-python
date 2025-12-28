@@ -9,6 +9,8 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
     
     :param filename: path to the filename
     '''
+    if select and not has_headers:
+        raise RuntimeError("select argument requires column headers")
 
     with open(filename) as f:
         rows = csv.reader(f, delimiter=delimiter)
@@ -24,7 +26,7 @@ def parse_csv(filename, select=None, types=None, has_headers=True, delimiter=","
         for row in rows:
             if not row:
                 continue
-            if has_headers and indices:
+            if select:
                 row = [row[i] for i in indices]
             if types:
                 row = [func(x) for func, x in zip(types, row)]
