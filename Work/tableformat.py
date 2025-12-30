@@ -1,3 +1,4 @@
+import stock
 class TableFormatter:
     def headings(self, headers):
         """
@@ -59,6 +60,10 @@ class HTMLTableFormatter(TableFormatter):
         print("<tr>")
 
 
+class FormatError(Exception):
+    pass
+
+
 def create_formatter(name: str) -> TableFormatter:
     if name == "txt":
         return TextTableFormatter()
@@ -67,4 +72,11 @@ def create_formatter(name: str) -> TableFormatter:
     elif name == "HTML":
         return HTMLTableFormatter()
     else:
-        raise RuntimeError(f"Unknown format {name}")
+        raise FormatError(f"Unknown tabel format {name}")
+
+
+def print_table(portfolio: list[stock.Stock], headers:list , formatter: TableFormatter):
+    formatter.headings(headers)
+    for stock_ in portfolio:
+        rowdata = [str(getattr(stock_, a)) for a in headers]
+        formatter.row(rowdata)
