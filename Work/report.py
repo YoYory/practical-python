@@ -4,6 +4,7 @@
 import sys
 from fileparse import parse_csv
 import stock
+import tableformat
 
 
 def read_portfolio(filename: str) -> list[stock.Stock]:
@@ -12,7 +13,9 @@ def read_portfolio(filename: str) -> list[stock.Stock]:
     name, shares, and price.
     """
     with open(filename) as f:
-        portdicts = parse_csv(f, select=["name", "shares", "price"], types=[str, int, float])
+        portdicts = parse_csv(
+            f, select=["name", "shares", "price"], types=[str, int, float]
+        )
         return [stock.Stock(s["name"], s["shares"], s["price"]) for s in portdicts]
 
 
@@ -46,25 +49,23 @@ def print_gain_loss(portfolio: list[stock.Stock], prices: dict):
     print(f"Gain/loss : {new_value - old_value} \n")
 
 
-def print_report(report: list[tuple]):
-    headers = ("Name", "Shares", "Price", "Change")
-    print("{:>10s} {:>10s} {:>10s} {:>10s}".format(*headers))
-    print(("-" * 10 + " ") * len(headers))
-    for name, shares, price, change in report:
-        print(f"{name:>10s} {shares:>10d} {price:>10.2f} {change:>10.2f}")
+def print_report(reportdata: list[tuple], formatter: tableformat.TableFormatter):
+    formatter.headings(["Name", "Shares", "Price", "Change"])
+    for name, shares, price, change in reportdata:
+        rowdata = [name, str(shares), f"{price:.2f}", f"{change:.2f}"]
+        formatter.row(rowdata)
 
 
-def portfolio_report(port_path: str, prices_path: str):
+def portfolio_report(port_path: str, prices_path: str, fmt="txt"):
     portfolio = read_portfolio(port_path)
     prices = read_prices(prices_path)
-    # print_gain_loss(portfolio, prices)
     report = make_report(portfolio, prices)
-    print_report(report)
+    print_report(report, tableformat.create_formatter(fmt))
 
 
 def main(argv):
-    if len(argv) == 3:
-        portfolio_report(argv[1], argv[2])
+    if len(argv) == 4:
+        portfolio_report(argv[1], argv[2], argv[3])
     else:
         portfolio_report("Data/portfolio.csv", "Data/prices.csv")
 
