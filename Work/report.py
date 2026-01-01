@@ -3,11 +3,12 @@
 # Exercise 2.4
 import sys
 from fileparse import parse_csv
-import stock
+from stock import Stock
 import tableformat
+from portfolio import Portfolio
 
 
-def read_portfolio(filename: str) -> list[stock.Stock]:
+def read_portfolio(filename: str) -> Portfolio:
     """
     Read a stock portfolio file into a list of dictionaries with keys
     name, shares, and price.
@@ -16,7 +17,7 @@ def read_portfolio(filename: str) -> list[stock.Stock]:
         portdicts = parse_csv(
             f, select=["name", "shares", "price"], types=[str, int, float]
         )
-        return [stock.Stock(s["name"], s["shares"], s["price"]) for s in portdicts]
+        return Portfolio([Stock(s["name"], s["shares"], s["price"]) for s in portdicts])
 
 
 def read_prices(filename: str) -> dict:
@@ -28,7 +29,7 @@ def read_prices(filename: str) -> dict:
         return dict(parse_csv(f, has_headers=False, types=[str, float]))
 
 
-def make_report(portfolio: list[stock.Stock], prices: dict) -> list[tuple]:
+def make_report(portfolio: list[Stock], prices: dict) -> list[tuple]:
     rows = []
     for s in portfolio:
         newprice = prices[s.name]
@@ -38,7 +39,7 @@ def make_report(portfolio: list[stock.Stock], prices: dict) -> list[tuple]:
     return rows
 
 
-def print_gain_loss(portfolio: list[stock.Stock], prices: dict):
+def print_gain_loss(portfolio: list[Stock], prices: dict):
     new_value = 0
     old_value = 0
     for s in portfolio:
