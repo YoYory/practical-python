@@ -1,7 +1,7 @@
 import csv
-import report
-from follow import follow
-from tableformat import create_formatter
+from . import report
+from .follow import follow
+from .tableformat import create_formatter
 
 def select_columns(rows, indices):
     for row in rows:

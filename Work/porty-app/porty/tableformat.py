@@ -1,4 +1,5 @@
-import stock
+from . import stock
+
 class TableFormatter:
     def headings(self, headers):
         """
